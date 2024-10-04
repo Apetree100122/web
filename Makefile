@@ -1,87 +1,113 @@
-##
-## Build procedure for www.openssl.org
-
-##  Checkouts.
-CHECKOUTS = /var/cache/openssl/checkouts
-##  Snapshot directory
-SNAP = $(CHECKOUTS)/openssl
-##  OMC data directory
-OMCDATA = $(CHECKOUTS)/data
-## Where releases are found.
-RELEASEDIR = /srv/ftp/source
-
-## The OMC repository checkout can be used for dependencies.
-## By default, we don't assume it, as not everyone has access to it.
+## ## Build procedure for www.openssl.org ##  Checkouts.
+CHECKOUTS = /var/cache/openssl/checkouts ## Snapshot directory
+SNAP = $(CHECKOUTS)/openssl ##  OMC data directory
+OMCDATA = $(CHECKOUTS)/data ## Where releases are found.
+RELEASEDIR = /srv/ftp/source ## The OMC repository checkout can be used for dependencies.
+## By default, we dont assume it, as not everyone has access to it.
 ## If you have it, do 'make PERSONDB=PATH/TO/omc/persondb.yaml' where
 ## PATH/TO/omc is the checked out OMC repository.
 ## We let it be FORCE by default...  This forces the production of files
 ## that depend on this database, instead of just conditionally.
-PERSONDB=FORCE
-
-######################################################################
-##
-##  Release series.  These represent our release branches, and are
-##  our foundation for what should be built and how (often generated)
-##
-##  The numbers given here RULE
-##
-
-##  Current series.  Variable names are numbered to indicate:
-##
-##  SERIES1	OpenSSL pre-3.0
-##  SERIES3	OpenSSL 3.0 and on
-##  SERIES	The concatenation of the above, for ease of use
-##
-##  We mostly use $(SERIES) further down, but there are places where we
-##  need to make the distinction, because certain files are produced
-##  differently.
-SERIES1=
-SERIES3=3.3 3.2 3.1 3.0
-SERIES=$(SERIES3) $(SERIES1)
-##  Older series.  The second type is for source listings
-OLDSERIES=1.1.1 1.1.0 1.0.2 1.0.1 1.0.0 0.9.8 0.9.7 0.9.6
-OLDSERIES2=1.1.1 1.1.0 1.0.2 1.0.1 1.0.0 0.9.x
-##  Series for manual layouts, named similar to SERIES1, SERIES3, SERIES
-MANSERIES1=1.1.1 1.0.2
-MANSERIES3=3.3 3.2 3.1 3.0
-MANSERIES=$(MANSERIES3) $(MANSERIES1)
-
-##  Future series, i.e. a series that hasn't had any final release yet.
-##  This would typically be a major or minor version that's still only
-##  on the master branch, but that has come far enough for us to start
-##  to make alpha and beta releases.
-##  We distinguish them to avoid having to produce notes, vulnerability
-##  documents, ... but still being able to present tarballs.
-FUTURESERIES=
-
-# All simple generated files.
-
-# The H_ variables hold renderings of .md files present in the local
-# repository.  This does not include .md files taken from other repositories,
-# they have their own special handling.
-H_TOP = $(addsuffix .html,\
-          $(basename $(shell git ls-files -- *.md | grep -v '^README')) \
-          $(basename $(basename $(shell git ls-files -- *.md.tt))))
-H_COMMUNITY = $(addsuffix .html,\
-                $(basename $(shell git ls-files -- community/*.md)) \
-                $(basename $(basename $(shell git ls-files -- community/*.md.tt))))
-# We filter out any file starting with 'sub-'...  they get special treatment
-H_DOCS = $(addsuffix .html,\
-           $(basename $(shell git ls-files -- docs/*.md \
-                                              docs/*.md.tt \
-                              | grep -v '/sub-')))
-H_NEWS = $(addsuffix .html,\
-           $(basename $(shell git ls-files -- news/*.md)) \
-           $(basename $(basename $(shell git ls-files -- news/*.md.tt))))
-H_POLICIES = $(addsuffix .html,\
-               $(basename $(shell git ls-files -- \
-                                  policies/*.md \
-                                  policies/general/*.md \
-                                  policies/technical/*.md \
-                                  policies/general-supplemental/*.md)) \
-               $(basename $(basename $(shell git ls-files -- \
-                                             policies/general/*.md.tt \
-                                             policies/technical/*.md.tt))))
+PERSONDB=FORCE ################################################
+################  Release series.  These represent our release branches, and are ##  our foundation for what should be built and how (often generated) ##
+##  The numbers given here
+RULE ## ##  Current series.  
+Variable names are numbered to indicate: ##
+##  SERIES1	
+OpenSSL pre-3.0
+##  SERIES3	
+OpenSSL 3.0 and on
+##  SERIES	
+The concatenation of the above, 
+for ease of use ##
+##  We mostly use
+$(SERIES) further down, but there are places where we ##  need to make the distinction, because
+certain files are produced ##  differently.
+SERIES1= SERIES3=3.3
+3.2
+3.1 
+3.0 SERIES=$(SERIES3)
+$(SERIES1) ##  Older series. 
+The second type is for
+source listings OLDSERIES=1.1.1 
+1.1.0 
+1.0.2 1.0.1
+1.0.0 0.9.8
+0.9.7 0.9.6 OLDSERIES2=1.1.1 1.1.0 
+1.0.2 1.0.1
+1.0.0 0.9.x ##  Series for manual layouts, 
+named similar to 
+SERIES1, SERIES3,
+SERIES  MANSERIES1=1.1.1 
+1.0.2 MANSERIES3=3.3 3.2 
+3.1 3.0 MANSERIES=$(MANSERIES3)
+$(MANSERIES1) ##  Future series, i.e. 
+a series that hasnt had any final release yet. ##  This would typically be a 
+major or minor version thats 
+still only ##  on the master branch,
+but that has come far enough for 
+us to start ##  to make alpha and beta releases. ##  We distinguish them to
+avoid having to produce notes, 
+vulnerability ##  documents, but still
+being able to present tarballs.
+FUTURESERIES= # All simple
+generated files. # The
+H_ variables hold renderings
+of .md files present in the local
+# repository.  
+This does not include 
+.md files taken from other 
+repositories, # they have their own 
+special handling.
+H_TOP = $(addsuffix
+.html,\
+$(basename $(shell git ls-files 
+-- *.md | grep -v '^README'))
+\  $(basename
+$(basename $(shell git ls-files 
+-- *.md.tt)))) H_COMMUNITY = $(addsuffix
+.html,
+\  $(basename
+$(shell git
+ls-files
+-- community/*.md)) 
+\
+  $(basename $(basename 
+$(shell git 
+ls
+-files
+-- community/*.md.tt)))) # We
+filter out any file starting with 
+'sub-'
+they get special treatment H_DOCS = $(addsuffix 
+.html,
+\  $(basename
+$(shell git ls
+-files 
+-- docs/*.md 
+\  docs/*.md.tt 
+\    
+| grep
+-v '/sub-'))) H_NEWS = $(addsuffix 
+.html,
+\ $(basename $(shell git ls-files 
+-- news/*.md)) 
+\  $(basename 
+$(basename $(shell
+git ls-files 
+-- news/*.md.tt))) H_POLICIES = $(addsuffix 
+.html
+\             
+$(basename $(shell git ls-files --
+\                             
+policies/*.md \                               
+policies/general/*.md \                           
+policies/technical/*.md \                        
+policies/general-supplemental/*.md)) \
+$(basename $(basename $(shell git ls-files -- \                                          
+policies/general/*.md.tt \
+                 
+policies/technical/*.md.tt))))
 # We filter out any file starting with 'sub-'...  they get special treatment
 H_SOURCE= $(addsuffix .html,\
             $(basename $(shell git ls-files -- source/*.md \
@@ -105,12 +131,9 @@ SIMPLE = $(H_TOP) \
 	 source/.htaccess \
 	 $(H_SUPPORT)
 SRCLISTS = $(foreach S,$(FUTURESERIES) $(SERIES) $(OLDSERIES2) fips,source/old/$(S)/index.html)
-
 SIMPLEDOCS = $(H_DOCS) \
-	     docs/OpenSSLStrategicArchitecture.html \
-	     docs/OpenSSL300Design.html \
-	     docs/manpages.html
-
+docs/OpenSSLStrategicArchitecture.html \	     docs/OpenSSL300Design.html \	
+docs/manpages.html
 GLOSSARY=$(CHECKOUTS)/general-policies/policies/glossary.md
 all_GENERAL_POLICIES=$(wildcard $(CHECKOUTS)/general-policies/policies/*.md)
 all_GENERAL_POLICY_SUPPL=$(wildcard $(CHECKOUTS)/general-policies/policy-supplemental/*.md)
@@ -118,9 +141,7 @@ all_TECHNICAL_POLICIES=$(wildcard $(CHECKOUTS)/technical-policies/policies/*.md)
 GENERAL_POLICIES=$(filter-out $(CHECKOUTS)/general-policies/policies/README.md $(GLOSSARY),$(all_GENERAL_POLICIES))
 GENERAL_POLICY_SUPPL=$(filter-out $(CHECKOUTS)/general-policies/policy-supplemental/README.md,$(all_GENERAL_POLICY_SUPPL))
 TECHNICAL_POLICIES=$(filter-out $(CHECKOUTS)/technical-policies/policies/README.md,$(all_TECHNICAL_POLICIES))
-
 .PHONY : FORCE
-
 %.html : %.md bin/md-to-html5
 	@rm -f $@
 	./bin/md-to-html5 $<
@@ -578,50 +599,48 @@ source/old/$(1)/index.md: source/old/sub-index.md.tt inc/legalities.md \
                           bin/from-tt Makefile
 	@mkdir -p `dirname $$@`
 	@rm -f $$@
-	./bin/from-tt -d source/old/$(1) \
-		      release='$(1)' releasetitle='Old $(2) Releases' \
-		      < $$< > $$@
+	./bin/from-tt -d source/old/$(1) 
+\		      release='$(1)' releasetitle='Old $(2) Releases' 
+\		
+< $$< > $$@
 endef
 define mkoldsourcedirdata
 source/old/$(1)/dirdata.yaml: source/old/sub-dirdata.yaml.tt bin/from-tt Makefile
-	@mkdir -p `dirname $$@`
-	@rm -f $$@
-	./bin/from-tt -d source/old/$(1) \
-		      release='$(1)' releasetitle='Old $(2) Releases' \
-		      < $$< > $$@
+@mkdir -p `dirname $$@`
+@rm -f $$@
+./bin/from-tt -d source/old/$(1) \		      release='$(1)'
+releasetitle='Old
+$(2) Releases'
+\< $$< > $$@
 source/old/$(1)/index.html: source/old/$(1)/dirdata.yaml
-endef
-
-# Create the update tarball index 'source/old/x.y.z/index.html' and
+endef # Create the update tarball index 'source/old/x.y.z/index.html' and
 # 'source/old/x.y.z/index.inc' for each release x.y.z.
 # We also create a list specifically for the old FIPS module, carefully
 # crafting an HTML title with an uppercase 'FIPS' while the subdirectory
 # remains named 'fips'
 $(foreach S,fips $(FUTURESERIES) $(SERIES) $(OLDSERIES2),$(eval $(call mkoldsourceindex,$(S),$(patsubst fips,FIPS,$(S)))))
 $(foreach S,fips $(FUTURESERIES) $(SERIES) $(OLDSERIES2),$(eval $(call mkoldsourcedirdata,$(S),$(patsubst fips,FIPS,$(S)))))
-
-source/old/index.md: source/old/index.md.tt inc/legalities.md \
-                     Makefile bin/from-tt Makefile
-	@mkdir -p `dirname $@`
-	@rm -f $@
-	./bin/from-tt releases='$(FUTURESERIES) $(SERIES) $(OLDSERIES2) fips' $<
-
-# Extra inc -> markdown dependencies
-
-news/newslog.md: news/newsflash.inc
+source/old/index.md: source/old/index.md.tt inc/legalities.md 
+\
+Makefile bin/from-tt Makefile
+@mkdir
+-p `dirname $@`
+@rm -f $@ ./bin/from-tt releases='$(FUTURESERIES) $(SERIES) 
+$(OLDSERIES2) fips' 
+$< # Extra inc ->
+markdown dependencies news/newslog.md: news/newsflash.inc
 news/pgpkey.md: news/openssl-security.asc
-source/index.md: source/index.inc
-
-# Extra HTML dependencies (apart from the markdown file it comes from)
-
-# makehtmldepend creates a standard dependency for HTML files rendered from
+source/index.md: 
+source/index.inc
+# Extra HTML dependencies (apart from the markdown file it comes from) # makehtmldepend creates a standard dependency for HTML files rendered from
 # markdown files
 # $(1) = HTML file
 define makehtmldepend
-$(1): bin/md-to-html5 $(dir $(1))dirdata.yaml
-endef
-
-# Generate standard dependencies for our known HTML outputs.
+$(1): bin/md-to-html5
+$(dir $(1))
+dir 
+data.yaml
+endef # Generate standard dependencies for our known HTML outputs.
 $(foreach H, \
   $(H_TOP) \
   $(H_COMMUNITY) \
